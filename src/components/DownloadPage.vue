@@ -1,10 +1,10 @@
 <template>
-$END$
+aa
 </template>
 
 <script>
 export default {
-name: "Download"
+  name: "DownloadPage"
 }
 </script>
 
