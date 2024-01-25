@@ -1,6 +1,11 @@
 <template>
   <div class="screen">
     <button @click="loadImage">Load Image</button>
+    <div>
+      <label for="textColor">텍스트 컬러 (Hex): </label>
+      <input type="text" id="textColor" v-model="textColor">
+      <button @click="applyTextColor">적용</button>
+    </div>
     <div class="canvas-container">
       <h2>모바일 캔버스</h2>
       <canvas ref="mobileCanvas" width="720" height="652"></canvas>
@@ -69,10 +74,11 @@ export default {
         },
       },
       textContents: {
-        title: "놀라운 혜택을 더한<br><strong>설 선물세트 특선</strong>",
+        title: "놀라운 <strong>혜택</strong>을 더한<br><strong>설 선물세트 특선</strong>",
         subTitle: "최대 2만원 페이백 찬스<br>20% 쿠폰 + 최대 79% 할인",
         disclaimer: "01.25 - 02.09",
       },
+      textColor: '#000000',
     }
   },
   methods: {
@@ -84,6 +90,10 @@ export default {
       };
       this.image.crossOrigin = '*';
       this.image.src = require('@/assets/sampleimage.png');
+    },
+    applyTextColor() {
+      this.updateCanvas('mobile');
+      this.updateCanvas('pc');
     },
     initializeCanvas(canvasType) {
       const canvas = this.$refs[`${canvasType}Canvas`];
@@ -112,6 +122,7 @@ export default {
       }
 
       ctx.drawImage(this.image, canvasData.imageX, canvasData.imageY, scaleWidth, scaleHeight);
+      this.updateCanvas(canvasType); // 캔버스 업데이트 호출 추가
     },
 
     updateCanvas(canvasType) {
@@ -214,19 +225,21 @@ export default {
       lines.forEach((line, index) => {
         const y = yPositions[index]; // 각 줄마다 고정된 y 위치 사용
         this.drawSingleLineText(ctx, line, x, y, style);
+        ctx.fillStyle = this.textColor; // 새로운 텍스트 컬러 적용
       });
     },
     drawSingleLineText(ctx, text, x, y, style) {
+      ctx.textBaseline = 'top'; // 텍스트 기준선을 상단으로 설정
+      ctx.textAlign = 'left'; // 텍스트 정렬을 왼쪽으로 설정
       const strongRegex = /<strong>(.*?)<\/strong>/g;
       let match;
       let lastIndex = 0;
 
       const drawTextSegment = (segment, bold = false) => {
+        ctx.fillStyle = this.textColor; // 새로운 텍스트 컬러 적용
         ctx.font = `${bold ? '700' : style.weight} ${style.size} Gotham`;
         ctx.fillText(segment, x, y);
         x += ctx.measureText(segment).width;
-        ctx.textBaseline = 'top'; // 텍스트 기준선을 상단으로 설정
-        ctx.textAlign = 'left'; // 텍스트 정렬을 왼쪽으로 설정
       };
 
       while ((match = strongRegex.exec(text)) !== null) {
