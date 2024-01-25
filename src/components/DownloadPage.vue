@@ -1,14 +1,25 @@
 <template>
   <div class="screen">
-    <div class="main-buttons">
-      <button @click="loadImage">Load Image</button>
-      <button @click="downloadImage">Download</button>
+    <button @click="loadImage">Load Image</button>
+    <div class="canvas-container">
+      <h2>모바일 캔버스</h2>
+      <canvas ref="mobileCanvas" width="720" height="652"></canvas>
+      <div class="sub-buttons">
+        <button @click="zoomIn('mobile')">Zoom In (Mobile)</button>
+        <button @click="zoomOut('mobile')">Zoom Out (Mobile)</button>
+      </div>
+      <button @click="downloadImage('mobile')">Download Mobile Banner</button>
     </div>
-    <div class="sub-buttons">
-      <button @click="zoomIn">Zoom In</button>
-      <button @click="zoomOut">Zoom Out</button>
+
+    <div class="canvas-container">
+      <h2>PC 캔버스</h2>
+      <canvas ref="pcCanvas" width="1900" height="370"></canvas>
+      <div class="sub-buttons">
+        <button @click="zoomIn('pc')">Zoom In (PC)</button>
+        <button @click="zoomOut('pc')">Zoom Out (PC)</button>
+      </div>
+      <button @click="downloadImage('pc')">Download PC Banner</button>
     </div>
-    <canvas ref="canvas"></canvas>
   </div>
 </template>
 
@@ -16,95 +27,181 @@
 export default {
   name: "DownloadPage",
   mounted() {
-    this.$refs.canvas.addEventListener('mousedown', this.startDrag);
-    this.$refs.canvas.addEventListener('mousemove', this.onDrag);
-    window.addEventListener('mouseup', this.stopDrag);
+    this.$refs.mobileCanvas.addEventListener('mousedown', (e) => this.startDrag(e, 'mobile'));
+    this.$refs.mobileCanvas.addEventListener('mousemove', (e) => this.onDrag(e, 'mobile'));
+    window.addEventListener('mouseup', () => this.stopDrag('mobile'));
+
+    this.$refs.pcCanvas.addEventListener('mousedown', (e) => this.startDrag(e, 'pc'));
+    this.$refs.pcCanvas.addEventListener('mousemove', (e) => this.onDrag(e, 'pc'));
+    window.addEventListener('mouseup', () => this.stopDrag('pc'));
   },
   data() {
     return {
       image: null,
-      dragging: false,
-      imageX: 0,
-      imageY: 0,
-      imageScale: 1,
-      lastMouseX: null,
-      lastMouseY: null,
+      mobile: {
+        dragging: false,
+        imageX: 0,
+        imageY: 0,
+        imageScale: 1,
+        lastMouseX: null,
+        lastMouseY: null,
+      },
+      pc: {
+        dragging: false,
+        imageX: 0,
+        imageY: 0,
+        imageScale: 1,
+        lastMouseX: null,
+        lastMouseY: null,
+      },
     }
   },
   methods: {
     loadImage() {
-      const canvas = this.$refs.canvas;
-      const ctx = canvas.getContext('2d');
-      canvas.width = 1200; // 캔버스 너비 설정
-      canvas.height = 1200; // 캔버스 높이 설정
-
       this.image = new Image();
       this.image.onload = () => {
-        ctx.drawImage(this.image, this.imageX, this.imageY, this.image.width * this.imageScale, this.image.height * this.imageScale);
+        this.initializeCanvas('mobile');
+        this.initializeCanvas('pc');
       };
       this.image.crossOrigin = '*';
-      this.image.src = require('@/assets/sampleimage.jpg');
+      this.image.src = require('@/assets/sampleimage.png');
     },
-    downloadImage() {
-      const canvas = this.$refs.canvas;
+    initializeCanvas(canvasType) {
+      const canvas = this.$refs[`${canvasType}Canvas`];
+      const ctx = canvas.getContext('2d');
+      const canvasData = this[canvasType];
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const ratio = this.image.width / this.image.height;
+      let scaleWidth, scaleHeight;
+
+      if (canvasType === 'pc') {
+        // PC 캔버스: 가로 기준 맞춤
+        scaleWidth = canvas.width;
+        scaleHeight = canvas.width / ratio;
+        canvasData.imageScale = scaleWidth / this.image.width;
+        canvasData.imageX = 0;
+        canvasData.imageY = (canvas.height - scaleHeight) / 2; // 중앙 정렬
+      } else {
+        // 모바일 캔버스: 세로 기준 맞춤
+        scaleWidth = canvas.height * ratio;
+        scaleHeight = canvas.height;
+        canvasData.imageScale = scaleHeight / this.image.height;
+        canvasData.imageX = (canvas.width - scaleWidth) / 2;
+        canvasData.imageY = 0;
+      }
+
+      ctx.drawImage(this.image, canvasData.imageX, canvasData.imageY, scaleWidth, scaleHeight);
+    },
+
+    updateCanvas(canvasType) {
+      const canvasData = this[canvasType];
+      const canvas = this.$refs[`${canvasType}Canvas`];
+      const ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scaledWidth = this.image.width * canvasData.imageScale;
+      const scaledHeight = this.image.height * canvasData.imageScale;
+
+      ctx.drawImage(this.image, canvasData.imageX, canvasData.imageY, scaledWidth, scaledHeight);
+    },
+
+    downloadImage(canvasType) {
+      const canvas = this.$refs[`${canvasType}Canvas`];
       const link = document.createElement('a');
-      link.download = 'image.png';
+      link.download = `${canvasType}_image.png`;
       link.href = canvas.toDataURL();
       link.click();
     },
-    startDrag(event) {
-      this.lastMouseX = event.clientX;
-      this.lastMouseY = event.clientY;
-      this.dragging = true;
+    startDrag(event, canvasType) {
+      const canvasData = this[canvasType];
+      canvasData.lastMouseX = event.clientX;
+      canvasData.lastMouseY = event.clientY;
+      canvasData.dragging = true;
     },
-    onDrag(event) {
-      if (this.dragging) {
-        const dx = event.clientX - this.lastMouseX;
-        const dy = event.clientY - this.lastMouseY;
-        this.imageX += dx;
-        this.imageY += dy;
-        this.lastMouseX = event.clientX;
-        this.lastMouseY = event.clientY;
-        this.updateCanvas();
+    onDrag(event, canvasType) {
+      const canvasData = this[canvasType];
+      const canvas = this.$refs[`${canvasType}Canvas`];
+
+      if (canvasData.dragging) {
+        const dx = event.clientX - canvasData.lastMouseX;
+        const dy = event.clientY - canvasData.lastMouseY;
+
+        canvasData.imageX += dx / canvasData.imageScale;
+        canvasData.imageY += dy / canvasData.imageScale;
+
+        this.adjustImageBounds(canvasData, canvas);
+
+        canvasData.lastMouseX = event.clientX;
+        canvasData.lastMouseY = event.clientY;
+
+        this.updateCanvas(canvasType);
       }
     },
-    stopDrag() {
-      this.dragging = false;
+
+    adjustImageBounds(canvasData, canvas) {
+      const scaledWidth = this.image.width * canvasData.imageScale;
+      const scaledHeight = this.image.height * canvasData.imageScale;
+
+      canvasData.imageX = Math.min(Math.max(canvasData.imageX, canvas.width - scaledWidth), 0);
+      canvasData.imageY = Math.min(Math.max(canvasData.imageY, canvas.height - scaledHeight), 0);
     },
-    updateCanvas() {
-      const ctx = this.$refs.canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.$refs.canvas.width, this.$refs.canvas.height);
-      ctx.drawImage(this.image, this.imageX, this.imageY, this.image.width * this.imageScale, this.image.height * this.imageScale);
+    stopDrag(canvasType) {
+      this[canvasType].dragging = false;
     },
-    zoomIn() {
-      this.imageScale *= 1.1;
-      this.updateCanvas();
+    zoomIn(canvasType) {
+      const canvasData = this[canvasType];
+      canvasData.imageScale *= 1.05;
+      this.updateCanvas(canvasType);
     },
-    zoomOut() {
-      this.imageScale /= 1.1;
-      this.updateCanvas();
+    zoomOut(canvasType) {
+      const canvasData = this[canvasType];
+      const canvas = this.$refs[`${canvasType}Canvas`];
+      const minScaleX = canvas.width / this.image.width;
+      const minScaleY = canvas.height / this.image.height;
+      const minScale = Math.max(minScaleX, minScaleY);
+
+      if (canvasData.imageScale > minScale) {
+        canvasData.imageScale /= 1.05;
+        canvasData.imageScale = Math.max(canvasData.imageScale, minScale);
+        this.updateCanvas(canvasType);
+      }
     },
-  }
+  },
 }
 </script>
 
 <style scoped>
+canvas {
+  border: 1px solid black;
+}
+
 .screen {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-.main-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+
+.canvas-container {
+  margin: 20px;
 }
+
 .sub-buttons {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
+}
+
+.main-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 </style>
