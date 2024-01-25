@@ -222,7 +222,7 @@ export default {
       let lastIndex = 0;
 
       const drawTextSegment = (segment, bold = false) => {
-        ctx.font = `${bold ? '700' : style.weight} ${style.size} Arial`;
+        ctx.font = `${bold ? '700' : style.weight} ${style.size} Gotham`;
         ctx.fillText(segment, x, y);
         x += ctx.measureText(segment).width;
         ctx.textBaseline = 'top'; // 텍스트 기준선을 상단으로 설정
