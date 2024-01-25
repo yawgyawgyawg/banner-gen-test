@@ -54,6 +54,25 @@ export default {
         lastMouseX: null,
         lastMouseY: null,
       },
+      textStyles: {
+        title: {
+          pc: { size: "40px", weight: "400", color: "#000000" },
+          mobile: { size: "50px", weight: "400", color: "#000000" },
+        },
+        subTitle: {
+          pc: { size: "18px", weight: "400", color: "#000000" },
+          mobile: { size: "27px", weight: "400", color: "#000000" },
+        },
+        disclaimer: {
+          pc: { size: "14px", weight: "400", color: "#000000" },
+          mobile: { size: "21px", weight: "400", color: "#000000" },
+        },
+      },
+      textContents: {
+        title: "놀라운 혜택을 더한<br><strong>설 선물세트 특선</strong>",
+        subTitle: "최대 2만원 페이백 찬스<br>20% 쿠폰 + 최대 79% 할인",
+        disclaimer: "01.25 - 02.09",
+      },
     }
   },
   methods: {
@@ -106,8 +125,28 @@ export default {
       const scaledHeight = this.image.height * canvasData.imageScale;
 
       ctx.drawImage(this.image, canvasData.imageX, canvasData.imageY, scaledWidth, scaledHeight);
-    },
 
+      // 텍스트 그리기
+      const textPositions = {
+        pc: {
+          title: [98, 150], // title 줄바꿈 위치 추가
+          subTitle: [217, 244, 271], // subTitle 줄바꿈 위치 추가
+          disclaimer: [338]
+        },
+        mobile: {
+          title: [72, 134], // title 줄바꿈 위치 추가
+          subTitle: [224, 258, 292], // subTitle 줄바꿈 위치 추가
+          disclaimer: [596]
+        }
+      };
+      const xOffset = canvasType === 'pc' ? 505 : 37;
+
+      Object.keys(this.textContents).forEach(key => {
+        const yPositions = textPositions[canvasType][key];
+        const style = this.textStyles[key][canvasType];
+        this.drawText(ctx, this.textContents[key], xOffset, yPositions, style);
+      });
+    },
     downloadImage(canvasType) {
       const canvas = this.$refs[`${canvasType}Canvas`];
       const link = document.createElement('a');
@@ -169,6 +208,46 @@ export default {
         this.updateCanvas(canvasType);
       }
     },
+    drawText(ctx, text, x, yPositions, style) {
+      // HTML 태그 파싱 및 텍스트 줄바꿈 처리
+      const lines = text.split("<br>");
+      lines.forEach((line, index) => {
+        const y = yPositions[index]; // 각 줄마다 고정된 y 위치 사용
+        this.drawSingleLineText(ctx, line, x, y, style);
+      });
+    },
+    drawSingleLineText(ctx, text, x, y, style) {
+      const strongRegex = /<strong>(.*?)<\/strong>/g;
+      let match;
+      let lastIndex = 0;
+
+      const drawTextSegment = (segment, bold = false) => {
+        ctx.font = `${bold ? '700' : style.weight} ${style.size} Arial`;
+        ctx.fillText(segment, x, y);
+        x += ctx.measureText(segment).width;
+        ctx.textBaseline = 'top'; // 텍스트 기준선을 상단으로 설정
+        ctx.textAlign = 'left'; // 텍스트 정렬을 왼쪽으로 설정
+      };
+
+      while ((match = strongRegex.exec(text)) !== null) {
+        // 강조되지 않은 일반 텍스트 그리기
+        const normalText = text.substring(lastIndex, match.index);
+        drawTextSegment(normalText);
+
+        // 강조 텍스트 그리기
+        const boldText = match[1];
+        drawTextSegment(boldText, true);
+
+        lastIndex = match.index + match[0].length;
+      }
+
+      // 마지막 일반 텍스트 그리기
+      const remainingText = text.substring(lastIndex);
+      if (remainingText) {
+        drawTextSegment(remainingText);
+      }
+    },
+
   },
 }
 </script>
