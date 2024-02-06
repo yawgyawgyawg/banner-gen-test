@@ -6,13 +6,16 @@
     </div>
     <div class="banner-preview-content">
       <div v-if="activeTab === 'mobile'">
-        <canvas ref="mobileCanvas" width="720" height="652"></canvas>
+        <canvas ref="mobileCanvas" class="mobile-canvas" width="720" height="652"></canvas>
       </div>
       <div v-if="activeTab === 'pc'">
-        <canvas ref="pcCanvas" width="1900" height="370"></canvas>
+        <canvas ref="pcCanvas" class="pc-canvas" width="1900" height="370"></canvas>
       </div>
     </div>
   </div>
+  <br>
+  <br>
+  <button @click="downloadImage(activeTab)">Download {{ activeTab === 'mobile' ? 'Mobile' : 'PC' }} Banner</button>
   </template>
 
 <script>
@@ -54,8 +57,7 @@ export default {
       },
       textContents: {
         title: "인기 간편식 특가 찬스<br><strong>CJ 브랜드위크</strong>",
-        subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰"
-        ,
+        subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰",
         disclaimer: "12.08 - 12.15",
       },
       textColor: '#000000',
@@ -63,10 +65,6 @@ export default {
   },
   mounted() {
     this.loadImage();
-  },
-  beforeUnmount() {
-    window.removeEventListener('mouseup', () => this.stopDrag('mobile'));
-    window.removeEventListener('mouseup', () => this.stopDrag('pc'));
   },
   methods: {
     changeTab(activeTab) {
@@ -162,9 +160,10 @@ export default {
       });
     },
     downloadImage(canvasType) {
+      console.log('downloadImage', canvasType);
       const canvas = this.$refs[`${canvasType}Canvas`];
       const link = document.createElement('a');
-      link.download = `${canvasType}_image.png`;
+      link.download = `${canvasType}_image.jpg`;
       link.href = canvas.toDataURL();
       link.click();
     },
@@ -273,6 +272,9 @@ export default {
   position: relative;
   width: calc(100% - 40px);
   transform: translateX(40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .banner-preview-area {
   margin-top: 60px;
@@ -329,5 +331,15 @@ export default {
   align-items: start;
   text-align: left;
   /* 필요한 추가 스타일링 */
+}
+
+.banner-preview-content .mobile-canvas {
+  transform: scale(0.5); /* 모바일 캔버스 크기 조정 */
+  transform-origin: top left;
+}
+
+.banner-preview-content .pc-canvas {
+  transform: scale(0.5); /* PC 캔버스 크기 조정 */
+  transform-origin: top left;
 }
 </style>

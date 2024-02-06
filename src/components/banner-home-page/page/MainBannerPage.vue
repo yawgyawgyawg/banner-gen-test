@@ -14,8 +14,10 @@ export default {
   name: "MainBannerPage",
   components: {BannerPreviewArea, BannerEditArea, MainBannerHeader},
   data() {
-
   },
+  methods: {
+
+  }
 }
 </script>
 
