@@ -67,8 +67,26 @@
           </div>
         </div>
       </div>
-      <div v-if="activeTab === 'image'">
-        <!-- 이미지 관련 내용 -->
+      <div style="width: 100%;" v-if="activeTab === 'image'">
+        <div class="text-area-title">
+          <h3>이미지 수정하기</h3>
+        </div>
+        <div class="text-area-fields">
+          <div class="fields-original-image">
+            <div class="fields-top-text">원본 이미지</div>
+            <input type="file" @change="loadOriginalImage" hidden ref="fileInput">
+            <img :src="originalImageSrc" alt="원본 이미지 미리보기">
+            <div>{{ originalImagePath }}</div>
+            <button @click="triggerFileInput">변경하기</button>
+          </div>
+
+          <div class="fields-generated-image">
+            <div class="fields-top-text">확장 이미지</div>
+            <img :src="generatedImageSrc" alt="확장 이미지 미리보기">
+            <button @click="refreshGeneratedImage">새로고침</button>
+            <button @click="applyGeneratedImage">적용하기</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -79,14 +97,34 @@ export default {
   name: "BannerTextEditArea",
   data() {
     return {
-      activeTab: 'text',
-      suggestionRequested: false
+      activeTab: 'image',
+      originalImagePath: `이미지를 선택해주세요 (jpg, png, gif, svg, jpeg 등)`,
+      originalImageSrc: null,
+      suggestionRequested: false,
+      generatedImageSrc: null,
+
     }
   },
   methods: {
-    requestSuggestion(){
+    requestSuggestion() {
       this.suggestionRequested = true;
-    }
+    },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    loadOriginalImage(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        this.originalImagePath = file.name;
+        this.originalImageSrc = URL.createObjectURL(file);
+      }
+    },
+    refreshGeneratedImage() {
+      console.log('새로고침');
+    },
+    applyGeneratedImage() {
+      console.log('적용하기');
+    },
   }
 }
 </script>
@@ -137,9 +175,10 @@ export default {
 .banner-edit-area .banner-edit-content {
   display: flex;
   width: 100%;
+  height: 341px;
   flex-direction: column;
   gap: 30px;
-  justify-content: center;
+  justify-content: start;
   align-items: start;
   text-align: left;
   /* 필요한 추가 스타일링 */
@@ -234,6 +273,72 @@ export default {
   font-weight: 600;
   font-size: 18px;
   transform: translateY(-15px);
+}
+
+.fields-original-image {
+  position: relative; /* 부모를 상대 위치로 설정 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  flex-direction: column; /* 세로 방향 배치 */
+  align-items: flex-end;
+  flex: 400; /* 비율에 따른 유연한 너비 설정 */
+  gap: 20px; /* textarea 간의 간격 */
+  border: 1px solid #CDD5DC;
+  border-radius: 10px;
+}
+.fields-generated-image {
+  position: relative; /* 부모를 상대 위치로 설정 */
+  display: flex; /* Flexbox 레이아웃 적용 */
+  align-items: flex-end;
+  flex-direction: column; /* 세로 방향 배치 */
+  flex: 600; /* 비율에 따른 유연한 너비 설정 */
+  gap: 20px; /* textarea 간의 간격 */
+  border: 1px solid #CDD5DC;
+  border-radius: 10px;
+}
+.fields-top-text {
+  position: absolute; /* 절대 위치 */
+  top: -12px; /* textarea의 상단 테두리 바깥에 위치 */
+  left: 20px; /* 좌측 여백 조정 */
+  background-color: white; /* 배경색 */
+  padding: 0 10px; /* 레이블 패딩 */
+  color: #5F0080;
+  font-weight: 700;
+  z-index: 11
+}
+.fields-original-image img, .fields-generated-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  background-color: #F7F9FB; /* 빈 사각형 배경색 */
+  height: 150px; /* 고정된 높이 설정 */
+  border: 1px solid #CDD5DC; /* 이미지 로드 전 테두리 */
+}
+
+.fields-original-image, .fields-generated-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 10px;
+}
+
+
+.fields-top-text {
+  font-weight: bold;
+  color: #5F0080;
+}
+
+
+.fields-original-image button,
+.fields-generated-image button{
+  width: 120px;
+  height: 34px;
+  border: 1.5px solid #5F0080;
+  color: #5F0080;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 8px;
 }
 
 </style>
