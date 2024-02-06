@@ -14,17 +14,57 @@
             <div class="textarea-container">
               <label for="text-top">상단 텍스트</label>
               <textarea name="text-top" id="text-top" rows="3" placeholder="텍스트를 입력하세요"></textarea>
+              <div class="idea-button" @click="requestSuggestion">
+                <svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_70_154)">
+                    <path d="M30.2752 0V10.1559H33.7248V0H30.2749H30.2752ZM16.1894 3.052L13.3631 5.03083L19.1873 13.3479L22.012 11.3691L16.1894 3.052ZM47.81 3.052L41.9875 11.3691L44.8126 13.348L50.6367 5.03083L47.8104 3.052H47.81ZM31.9993 12.9346C23.5605 12.9346 16.7197 18.059 16.7197 24.3813L25.4008 50.6718H38.5992L47.2797 24.3813C47.2797 18.0591 40.4392 12.9346 32.0001 12.9346H31.9993ZM4.55801 15.9826L3.37939 19.226L12.918 22.6987L14.101 19.4569L4.55779 15.9826H4.55801ZM59.4413 15.9826L49.8981 19.4571L51.077 22.6994L60.6203 19.226L59.4413 15.9826ZM13.6402 30.8097L3.83219 33.4404L4.72211 36.77L14.5301 34.1431L13.6404 30.8097H13.6402ZM50.3591 30.8097L49.4698 34.143L59.2779 36.7695L60.1671 33.4398L50.3591 30.8095V30.8097ZM25.2084 52.5884V57.1583H38.7917V52.5891H25.2085L25.2084 52.5884ZM25.2084 59.4301V64H38.7917V59.4308H25.2085L25.2084 59.4301Z" fill="#DBE1E6"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_70_154">
+                      <rect width="64" height="64" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
             </div>
             <div class="textarea-container">
               <label for="text-middle">중간 텍스트</label>
               <textarea name="text-middle" id="text-middle" rows="3" placeholder="텍스트를 입력하세요"></textarea>
+              <div class="idea-button" @click="requestSuggestion">
+                <svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_70_154)">
+                    <path d="M30.2752 0V10.1559H33.7248V0H30.2749H30.2752ZM16.1894 3.052L13.3631 5.03083L19.1873 13.3479L22.012 11.3691L16.1894 3.052ZM47.81 3.052L41.9875 11.3691L44.8126 13.348L50.6367 5.03083L47.8104 3.052H47.81ZM31.9993 12.9346C23.5605 12.9346 16.7197 18.059 16.7197 24.3813L25.4008 50.6718H38.5992L47.2797 24.3813C47.2797 18.0591 40.4392 12.9346 32.0001 12.9346H31.9993ZM4.55801 15.9826L3.37939 19.226L12.918 22.6987L14.101 19.4569L4.55779 15.9826H4.55801ZM59.4413 15.9826L49.8981 19.4571L51.077 22.6994L60.6203 19.226L59.4413 15.9826ZM13.6402 30.8097L3.83219 33.4404L4.72211 36.77L14.5301 34.1431L13.6404 30.8097H13.6402ZM50.3591 30.8097L49.4698 34.143L59.2779 36.7695L60.1671 33.4398L50.3591 30.8095V30.8097ZM25.2084 52.5884V57.1583H38.7917V52.5891H25.2085L25.2084 52.5884ZM25.2084 59.4301V64H38.7917V59.4308H25.2085L25.2084 59.4301Z" fill="#DBE1E6"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_70_154">
+                      <rect width="64" height="64" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
             </div>
             <div class="textarea-container">
               <label for="text-bottom">하단 텍스트</label>
               <textarea name="text-bottom" id="text-bottom" rows="1" placeholder="텍스트를 입력하세요"></textarea>
             </div>
           </div>
-          <div class="fields-suggestions"></div>
+          <div class="fields-suggestions">
+            <div class="suggestions-title">
+              <h4 style="color:#67757E; font-weight: 700">이런 문구는 어떠세요?</h4>
+              <svg width="30" height="18" viewBox="0 0 30 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="30" height="18" rx="9" fill="#5F0080"/>
+                <path d="M13.808 4.252L17.42 13.084H16.076L15.092 10.672H11.048L10.04 13.084H8.684L12.368 4.252H13.808ZM11.492 9.592H14.636L13.088 5.788L11.492 9.592ZM18.8844 4.252H20.1324V13.084H18.8844V4.252Z" fill="white"/>
+              </svg>
+            </div>
+              <div class="suggestions-contents">
+               <div class="guide-text" v-if="!suggestionRequested">
+                <svg width="32" height="34" viewBox="0 0 58 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M27.2752 0V10.1559H30.7248V0H27.2749H27.2752ZM13.1894 3.052L10.3631 5.03083L16.1873 13.3479L19.012 11.3691L13.1894 3.052ZM44.81 3.052L38.9875 11.3691L41.8126 13.348L47.6367 5.03083L44.8104 3.052H44.81ZM28.9993 12.9346C20.5605 12.9346 13.7197 18.059 13.7197 24.3813L22.4008 50.6718H35.5992L44.2797 24.3813C44.2797 18.0591 37.4392 12.9346 29.0001 12.9346H28.9993ZM1.55801 15.9826L0.379395 19.226L9.91801 22.6987L11.101 19.4569L1.55779 15.9826H1.55801ZM56.4413 15.9826L46.8981 19.4571L48.077 22.6994L57.6203 19.226L56.4413 15.9826ZM10.6402 30.8097L0.832195 33.4404L1.72211 36.77L11.5301 34.1431L10.6404 30.8097H10.6402ZM47.3591 30.8097L46.4698 34.143L56.2779 36.7695L57.1671 33.4398L47.3591 30.8095V30.8097ZM22.2084 52.5884V57.1583H35.7917V52.5891H22.2085L22.2084 52.5884ZM22.2084 59.4301V64H35.7917V59.4308H22.2085L22.2084 59.4301Z" fill="#DBE1E6"/>
+              </svg>
+                <span>를 눌러 AI 문구 제안을 받아보세요</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="activeTab === 'image'">
@@ -39,7 +79,13 @@ export default {
   name: "BannerTextEditArea",
   data() {
     return {
-      activeTab: 'text'
+      activeTab: 'text',
+      suggestionRequested: false
+    }
+  },
+  methods: {
+    requestSuggestion(){
+      this.suggestionRequested = true;
     }
   }
 }
@@ -126,9 +172,11 @@ export default {
   padding: 0 10px; /* 레이블 패딩 */
   color: #5F0080;
   font-weight: 700;
+  z-index: 11
 }
 
 .textarea-container textarea {
+  position: relative;
   border-radius: 10px;
   border: 1px solid #CDD5DC;
   padding: 15px 24px; /* 세로 15px, 가로 24px 패딩 */
@@ -139,18 +187,53 @@ export default {
   overflow: hidden;
 }
 
+.idea-button{
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 10;
+}
+
 .fields-textarea textarea::placeholder {
   color: grey; /* placeholder 색상 */
 }
 
 .fields-suggestions {
-  flex: 730;
+  position: relative;
+  flex: 650;
   border: 1px solid #CDD5DC;
   border-radius: 10px;
   background-color: #F7F9FB;
-  padding: 20px;
   box-sizing: border-box;
+  padding: 30px;
+}
 
+.suggestions-title {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.suggestions-contents {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.guide-text{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #C6C7C9;
+  font-weight: 600;
+  font-size: 18px;
+  transform: translateY(-15px);
 }
 
 </style>
