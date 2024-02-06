@@ -1,14 +1,15 @@
 <template>
+  <!-- this service is best in 1366x768 resolution -->
   <div id="app">
     <div class="nav-bar">
       <div class="nav-bar-logo">
         <img src="@/assets/logo.png" alt="로고" width="200px" height="auto"/>
       </div>
-      <router-link class="nav-item" to="/download" active-class="active-link">메인 홈 배너</router-link>
-      <router-link class="nav-item" to="/download2" active-class="active-link">특가혜택 탭 띠배너</router-link>
-      <router-link class="nav-item" to="/download3" active-class="active-link">상세페이지</router-link>
-      <router-link class="nav-item" to="/download4" active-class="active-link">아웃풋 갤러리</router-link>
-      <router-link class="nav-item" to="/download5" active-class="active-link">설정</router-link>
+      <router-link class="nav-item" to="/mainbanner" active-class="active-link">메인 홈 배너</router-link>
+      <router-link class="nav-item" to="/download" active-class="active-link">특가혜택 탭 띠배너</router-link>
+      <router-link class="nav-item" to="/download" active-class="active-link">상세페이지</router-link>
+      <router-link class="nav-item" to="/download" active-class="active-link">아웃풋 갤러리</router-link>
+      <router-link class="nav-item" to="/download" active-class="active-link">설정</router-link>
     </div>
     <div class="top-bar">
 
@@ -47,6 +48,33 @@ export default {
   padding: 0;
 }
 
+h2{
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+h3{
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+h4{
+  font-size: 20px;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+p{
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
 .nav-bar {
   width: 300px; /* 네비게이션 바의 너비 */
   position: fixed;
@@ -67,7 +95,7 @@ export default {
 }
 
 .nav-bar-logo{
-  margin-bottom: 25px;
+  margin-bottom: 54px;
 }
 
 .nav-item {
@@ -102,7 +130,10 @@ export default {
 .main-content {
   margin-top: 120px;
   margin-left: 300px; /* 네비게이션 바의 너비에 맞춰 조정 */
-  padding: 20px;
+  padding: 60px;
+  width: calc(100vw - 300px); /* 뷰포트 너비에서 네비게이션 바의 너비를 뺀 나머지 */
+  min-width: 1200px;
+  box-sizing: border-box;
   /* 추가 스타일링 */
 }
 

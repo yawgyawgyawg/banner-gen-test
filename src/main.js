@@ -4,11 +4,14 @@ import { initializeApp } from "firebase/app";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
+    { path: "/", redirect: "/mainbanner"},
     { path: "/download", component: DownloadPage },
+    { path: "/mainbanner", component: MainBannerPage },
 ];
 
 
 import DownloadPage from "@/components/DownloadPage";
+import MainBannerPage from "@/components/banner-home-page/page/MainBannerPage";
 
 const router = createRouter({
     history: createWebHistory(),
