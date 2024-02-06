@@ -142,5 +142,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: #F7F9FB;
+  box-sizing: border-box;
 }
 </style>
