@@ -69,14 +69,15 @@ export default {
           mobile: { size: "27px", weight: "400", color: "#000000" },
         },
         disclaimer: {
-          pc: { size: "14px", weight: "400", color: "#000000" },
+          pc: { size: "16px", weight: "400", color: "#000000" },
           mobile: { size: "21px", weight: "400", color: "#000000" },
         },
       },
       textContents: {
-        title: "놀라운 <strong>혜택</strong>을 더한<br><strong>설 선물세트 특선</strong>",
-        subTitle: "최대 2만원 페이백 찬스<br>20% 쿠폰 + 최대 79% 할인",
-        disclaimer: "01.25 - 02.09",
+        title: "인기 간편식 특가 찬스<br><strong>CJ 브랜드위크</strong>",
+        subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰"
+        ,
+        disclaimer: "12.08 - 12.15",
       },
       textColor: '#000000',
     }
@@ -89,7 +90,7 @@ export default {
         this.initializeCanvas('pc');
       };
       this.image.crossOrigin = '*';
-      this.image.src = require('@/assets/sampleimage.png');
+      this.image.src = require('@/assets/sampleimage2.jpeg');
     },
     applyTextColor() {
       this.updateCanvas('mobile');
@@ -237,7 +238,7 @@ export default {
 
       const drawTextSegment = (segment, bold = false) => {
         ctx.fillStyle = this.textColor; // 새로운 텍스트 컬러 적용
-        ctx.font = `${bold ? '700' : style.weight} ${style.size} Gotham`;
+        ctx.font = `${bold ? '600' : style.weight} ${style.size} Gotham`;
         ctx.fillText(segment, x, y);
         x += ctx.measureText(segment).width;
       };
