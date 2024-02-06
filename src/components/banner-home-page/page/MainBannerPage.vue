@@ -1,16 +1,18 @@
 <template>
   <div class="content">
     <MainBannerHeader/>
-    <BannerTextEditArea/>
+    <BannerEditArea/>
+    <BannerPreviewArea/>
   </div>
 </template>
 
 <script>
 import MainBannerHeader from "@/components/banner-home-page/component/MainBannerHeader";
-import BannerTextEditArea from "@/components/banner-home-page/component/BannerTextEditArea";
+import BannerEditArea from "@/components/banner-home-page/component/BannerEditArea";
+import BannerPreviewArea from "@/components/banner-home-page/component/BannerPreviewArea";
 export default {
   name: "MainBannerPage",
-  components: {BannerTextEditArea, MainBannerHeader},
+  components: {BannerPreviewArea, BannerEditArea, MainBannerHeader},
   data() {
   },
 }
