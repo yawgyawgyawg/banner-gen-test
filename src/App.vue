@@ -43,7 +43,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin: 0;
   padding: 0;
 }
@@ -92,7 +91,7 @@ export default {
   padding-left: 300px;
   box-sizing: border-box;
   border-bottom: 1px solid #DBE1E6;
-  background-color: white;
+  background-color: #F7F9FB;
   z-index: 999;
 }
 
@@ -111,5 +110,6 @@ body {
   font-family: 'Pretendard-Regular', sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #F7F9FB;
 }
 </style>
