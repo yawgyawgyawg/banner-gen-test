@@ -79,7 +79,7 @@
             <div class="fields-top-text">원본 이미지</div>
             <input type="file" @change="loadOriginalImage" hidden ref="fileInput">
             <img :src="originalImageSrc" alt="원본 이미지 미리보기">
-            <div>{{ originalImageSrc }}</div>
+            <div>{{ originalFileName }}</div>
             <button @click="triggerFileInput">변경하기</button>
           </div>
 
@@ -106,6 +106,7 @@ export default {
       suggestionRequested: false,
       generatedImageSrc: null,
       localTextContents: JSON.parse(JSON.stringify(this.textContents)),
+      originalFileName: '',
     }
   },
   props: {
@@ -162,36 +163,56 @@ export default {
         3: require('@/assets/images/original3.jpg'),
       };
       this.originalImageSrc = imagePaths[bannerId];
+      this.originalFileName = imagePaths[bannerId];
     },
     updateGeneratedImageSrc(originalSrc) {
-      console.log('이미지 경로:', originalSrc)
-      // 파일 경로에서 파일명 추출
-      const fileName = originalSrc.split('/').pop();
-      console.log('파일명:', fileName)
-      // 파일명에서 'original' 다음에 오는 숫자 및 하이픈과 숫자 조합 추출
-      const fileNumberPattern = fileName.match(/original(\d+(-\d+)?)/);
-      console.log('추출된 파일 번호:', fileNumberPattern)
+        if (this.originalFileName === this.originalImageSrc){
+          const fileName = originalSrc.split('/').pop();
+          const fileNumberPattern = fileName.match(/original(\d+(-\d+)?)/);
 
-      if (fileNumberPattern) {
-        // 추출된 패턴(숫자 및 가능한 하이픈과 숫자)을 기반으로 새 파일명 생성
-        const fileNumber = String(fileNumberPattern[1]); // '2' 또는 '2-2'와 같은 문자열
-        console.log(fileNumber + '번째 이미지를 생성합니다');
-        const genImagePaths = {
-          '1': 'generated1.jpg',
-          '2': 'generated2.jpg',
-          '3': 'generated3.jpg',
-          '1-1': 'generated1-1.jpg',
-          '2-1': 'generated2-1.jpg',
-          '3-1': 'generated3-1.jpg',
-        };
-        this.generatedImageSrc = genImagePaths[fileNumber];
-      }
+          if (fileNumberPattern) {
+            const fileNumber = String(fileNumberPattern[1]); // '2' 또는 '2-2'와 같은 문자열
+            const genImagePaths = {
+              '1': 'generated1.jpg',
+              '2': 'generated2.jpg',
+              '3': 'generated3.jpg',
+              '1-1': 'generated1-1.jpg',
+              '2-1': 'generated2-1.jpg',
+              '3-1': 'generated3-1.jpg',
+            };
+            this.generatedImageSrc = genImagePaths[fileNumber];
+          }
+        } else {
+          const fileNameWithoutExtension = this.originalFileName.split('.')[0];
+          console.log(fileNameWithoutExtension + '에서 숫자 추출을 시도합니다.');
+          const filePattern = fileNameWithoutExtension.match(/original(\d+(-\d+)?)/);
+          console.log(filePattern);
+
+          if (filePattern) {
+            const fileNumber = String(filePattern[1]); // '3-1'과 같은 문자열 추출
+            console.log(fileNumber + '번째 이미지를 생성합니다.');
+
+            const genImagePaths = {
+              '1': 'generated1.jpg',
+              '2': 'generated2.jpg',
+              '3': 'generated3.jpg',
+              '1-1': 'generated1-1.jpg',
+              '2-1': 'generated2-1.jpg',
+              '3-1': 'generated3-1.jpg',
+            };
+
+            this.generatedImageSrc = genImagePaths[fileNumber];
+          }
+        }
     },
     loadOriginalImage(event) {
       const file = event.target.files[0];
       if (file && file.type.startsWith('image/')) {
-        this.originalImagePath = file.name;
-        this.originalImageSrc = URL.createObjectURL(file);
+        this.originalImagePath = file.name; // 파일 경로 대신 파일명을 저장
+        this.originalFileName = file.name; // 파일명 저장
+        this.originalImageSrc = URL.createObjectURL(file); // 파일 URL 생성
+        this.updateGeneratedImageSrc(this.originalFileName);
+        console.log('이미지를 업로드합니다' + this.originalFileName);
       }
     },
     refreshGeneratedImage() {
