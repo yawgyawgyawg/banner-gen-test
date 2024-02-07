@@ -72,7 +72,10 @@ export default {
       textColor: '#000000',
     }
   },
-  props: ['textContents'],
+  props: {
+    textContents: Array,
+    bannerId: Number,
+  },
   async mounted() {
     await this.loadImage();
     this.updateCanvas(this.activeTab);
@@ -116,7 +119,16 @@ export default {
         };
         this.image.onerror = reject;
         this.image.crossOrigin = '*';
-        this.image.src = require('@/assets/sampleimage2.jpeg');
+        const genImagePaths = {
+          '1': 'generated1.jpg',
+          '2': 'generated2.jpg',
+          '3': 'generated3.jpg',
+          '1-1': 'generated1-1.jpg',
+          '2-1': 'generated2-1.jpg',
+          '3-1': 'generated3-1.jpg',
+        };
+        this.generatedImageSrc = genImagePaths[this.bannerId];
+        this.image.src = require(`@/assets/images/${this.generatedImageSrc}`);
       });
     },
     applyTextColor() {

@@ -100,7 +100,7 @@ export default {
   name: "BannerEditArea",
   data() {
     return {
-      activeTab: 'image',
+      activeTab: 'text',
       originalImagePath: `이미지를 선택해주세요 (jpg, png, gif, svg, jpeg 등)`,
       originalImageSrc: null,
       suggestionRequested: false,
