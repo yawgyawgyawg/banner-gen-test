@@ -208,16 +208,14 @@ export default {
       const storedState = this.$store.getters.getBannerState(canvasType);
 
       if (storedState && storedState.imageId === this.bannerId) {
-        // 가져온 상태로 현재 컴포넌트의 상태를 업데이트
         this[canvasType] = { ...this[canvasType], ...storedState };
       } else {
-        // 새 배너 또는 저장된 상태가 없는 경우, 기본 상태를 사용
         this[canvasType] = {
           ...this[canvasType],
           imageId: this.bannerId,
           dragging: false,
-          imageX: 0,
-          imageY: 0,
+          imageX: -725,
+          imageY: -398,
           imageScale: 1,
           lastMouseX: null,
           lastMouseY: null,

@@ -27,7 +27,5 @@ export default createStore({
             return state.banners[type];
         }
     },
-    plugins: [createPersistedState({
-        storage: window.localStorage,
-    })],
+    plugins: [createPersistedState()]
 });
