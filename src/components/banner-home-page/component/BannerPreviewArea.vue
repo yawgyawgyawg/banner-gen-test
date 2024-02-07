@@ -75,6 +75,7 @@ export default {
   props: {
     textContents: Array,
     bannerId: Number,
+    newFile: String,
   },
   async mounted() {
     await this.loadImage();
@@ -93,6 +94,18 @@ export default {
       }
     },
     bannerId: {
+      immediate: true,
+      handler() {
+        if(this.activeTab === 'mobile' && this.$refs.mobileCanvas) {
+          this.loadImage().then(() => this.initializeCanvas('mobile'));
+          this.updateCanvas('mobile');
+        } else if(this.activeTab === 'pc' && this.$refs.pcCanvas) {
+          this.loadImage().then(() => this.initializeCanvas('pc'));
+          this.updateCanvas('pc');
+        }
+      }
+    },
+    newFile: {
       immediate: true,
       handler() {
         if(this.activeTab === 'mobile' && this.$refs.mobileCanvas) {
@@ -131,16 +144,22 @@ export default {
         };
         this.image.onerror = reject;
         this.image.crossOrigin = '*';
-        const genImagePaths = {
-          '1': 'generated1.jpg',
-          '2': 'generated2.jpg',
-          '3': 'generated3.jpg',
-          '1-1': 'generated1-1.jpg',
-          '2-1': 'generated2-1.jpg',
-          '3-1': 'generated3-1.jpg',
-        };
-        this.generatedImageSrc = genImagePaths[this.bannerId];
-        this.image.src = require(`@/assets/images/${this.generatedImageSrc}`);
+        if(this.newFile) {
+          this.image.src = require(`@/assets/images/${this.newFile}`);
+          this.updateCanvas(this.activeTab);
+          console.log('i think i am here')
+        } else {
+          const genImagePaths = {
+            '1': 'generated1.jpg',
+            '2': 'generated2.jpg',
+            '3': 'generated3.jpg',
+            '1-1': 'generated1-1.jpg',
+            '2-1': 'generated2-1.jpg',
+            '3-1': 'generated3-1.jpg',
+          };
+          this.generatedImageSrc = genImagePaths[this.bannerId];
+          this.image.src = require(`@/assets/images/${this.generatedImageSrc}`);
+        }
       });
     },
     applyTextColor() {

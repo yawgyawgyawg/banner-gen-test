@@ -85,9 +85,11 @@
 
           <div class="fields-generated-image">
             <div class="fields-top-text">확장 이미지</div>
-            <img :src="resolvedImageSrc" alt="확장 이미지 미리보기">
-            <button @click="refreshGeneratedImage">새로고침</button>
-            <button @click="applyGeneratedImage">적용하기</button>
+            <img style="height: 245px; width: auto; transform: translateX(-40px);" :src="resolvedImageSrc" alt="확장 이미지 미리보기">
+            <div class="gen-button">
+              <button @click="refreshGeneratedImage">새로고침</button>
+              <button @click="applyGeneratedImage">적용하기</button>
+            </div>
           </div>
         </div>
       </div>
@@ -200,8 +202,8 @@ export default {
               '2-1': 'generated2-1.jpg',
               '3-1': 'generated3-1.jpg',
             };
-
             this.generatedImageSrc = genImagePaths[fileNumber];
+            this.$emit('update-data', this.generatedImageSrc);
           }
         }
     },
@@ -390,6 +392,14 @@ export default {
   gap: 20px; /* textarea 간의 간격 */
   border: 1px solid #CDD5DC;
   border-radius: 10px;
+}
+.gen-button{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: 20px;
+  right: 20px;
+  gap: 10px;
 }
 .fields-top-text {
   position: absolute; /* 절대 위치 */
