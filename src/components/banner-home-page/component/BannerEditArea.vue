@@ -112,7 +112,7 @@ export default {
     }
   },
   props: {
-    textContents: Array,
+    textContents: Object,
     bannerId: Number,
   },
   mounted() {
@@ -218,10 +218,10 @@ export default {
       }
     },
     refreshGeneratedImage() {
-      console.log('새로고침');
+      alert('이미지를 새로 생성합니다')
     },
     applyGeneratedImage() {
-      console.log('적용하기');
+      alert('변경된 이미지를 적용합니다')
     },
   }
 }

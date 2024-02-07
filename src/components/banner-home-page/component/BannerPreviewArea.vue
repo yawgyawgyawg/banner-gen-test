@@ -75,13 +75,24 @@ export default {
     }
   },
   props: {
-    textContents: Array,
+    textContents: Object,
     bannerId: Number,
     newFile: String,
   },
   async mounted() {
     await this.loadImage();
     this.updateCanvas(this.activeTab);
+    this.mobile.id = this.bannerId;
+    this.pc.id = this.bannerId;
+    this.changeTab('mobile');
+  },
+  computed: {
+    mobileBannerState() {
+      return this.$store.getters.getBannerState('mobile');
+    },
+    pcBannerState() {
+      return this.$store.getters.getBannerState('pc');
+    }
   },
   watch: {
     // textContents 객체 전체를 감시합니다.
@@ -192,6 +203,25 @@ export default {
         canvasData.imageScale = scaleHeight / this.image.height;
         canvasData.imageX = (canvas.width - scaleWidth) / 2;
         canvasData.imageY = 0;
+      }
+
+      const storedState = this.$store.getters.getBannerState(canvasType);
+
+      if (storedState && storedState.imageId === this.bannerId) {
+        // 가져온 상태로 현재 컴포넌트의 상태를 업데이트
+        this[canvasType] = { ...this[canvasType], ...storedState };
+      } else {
+        // 새 배너 또는 저장된 상태가 없는 경우, 기본 상태를 사용
+        this[canvasType] = {
+          ...this[canvasType],
+          imageId: this.bannerId,
+          dragging: false,
+          imageX: 0,
+          imageY: 0,
+          imageScale: 1,
+          lastMouseX: null,
+          lastMouseY: null,
+        };
       }
 
       ctx.drawImage(this.image, canvasData.imageX, canvasData.imageY, scaleWidth, scaleHeight);
@@ -333,6 +363,11 @@ export default {
         drawTextSegment(remainingText);
       }
     },
+    saveImage(activeTab) {
+      const bannerData = this[activeTab]; // activeTab에 해당하는 데이터 가져오기
+      this.$store.dispatch('saveBannerState', { type: activeTab, data: bannerData });
+      alert('편집내용이 저장되었습니다.');
+    }
   }
 }
 </script>

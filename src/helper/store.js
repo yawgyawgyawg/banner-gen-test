@@ -1,18 +1,33 @@
 import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
+
 
 export default createStore({
     state() {
         return {
+            banners: {
+                mobile: {},
+                pc: {}
+            }
             // 상태 정의
         };
     },
     mutations: {
-        // 상태를 변경하는 메소드 정의
+        updateBannerState(state, { type, data }) {
+            state.banners[type] = { ...state.banners[type], ...data };
+        }
     },
     actions: {
-        // 비동기 로직을 실행하는 메소드 정의
+        async saveBannerState({ commit }, { type, data }) {
+            commit('updateBannerState', { type, data });
+        }
     },
     getters: {
-        // 상태에 기반한 계산된 속성 정의
-    }
+        getBannerState: (state) => (type) => {
+            return state.banners[type];
+        }
+    },
+    plugins: [createPersistedState({
+        storage: window.localStorage,
+    })],
 });
