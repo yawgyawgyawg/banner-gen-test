@@ -5,6 +5,23 @@
       <button @click="changeTab('pc')" :class="{active: activeTab === 'pc'}">PC</button>
     </div>
     <div class="banner-preview-content">
+      <div class="preview-button">
+        <div class="zoom-in" @click="zoomIn(activeTab)">
+          <svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.39 9.02V16.4H27.77V19.46H20.39V26.81H17.36V19.46H9.98V16.4H17.36V9.02H20.39Z" fill="#5F0080"/>
+            <circle cx="18.5" cy="18.5" r="18" stroke="#5F0080"/>
+          </svg>
+        </div>
+        <div class="zoom-out" @click="zoomOut(activeTab)">
+          <svg width="37" height="38" viewBox="0 0 37 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.95 17.4H25.03V20.49H11.95V17.4Z" fill="#5F0080"/>
+            <circle cx="18.5" cy="18.5" r="18" stroke="#5F0080"/>
+          </svg>
+
+        </div>
+        <div class="save-button" @click="downloadImage(activeTab)">다운로드</div>
+        <div class="save-button" @click="saveImage(activeTab)">저장하기</div>
+      </div>
       <div v-if="activeTab === 'mobile'">
         <canvas ref="mobileCanvas" class="mobile-canvas" width="720" height="652"></canvas>
       </div>
@@ -13,10 +30,7 @@
       </div>
     </div>
   </div>
-  <br>
-  <br>
-  <button @click="downloadImage(activeTab)">Download {{ activeTab === 'mobile' ? 'Mobile' : 'PC' }} Banner</button>
-  </template>
+</template>
 
 <script>
 export default {
@@ -337,21 +351,49 @@ export default {
   display: flex;
   width: 100%;
   height: 341px;
-  flex-direction: column;
   gap: 30px;
-  justify-content: start;
-  align-items: start;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   text-align: left;
   /* 필요한 추가 스타일링 */
 }
 
 .banner-preview-content .mobile-canvas {
-  transform: scale(0.5); /* 모바일 캔버스 크기 조정 */
-  transform-origin: top left;
+  transform: translateY(-15px) scale(0.5); /* 모바일 캔버스 크기 조정 */
+  transform-origin: center;
 }
 
 .banner-preview-content .pc-canvas {
   transform: scale(0.5); /* PC 캔버스 크기 조정 */
-  transform-origin: top left;
+  transform-origin: center;
 }
+
+.preview-button{
+  position:absolute;
+  bottom: 10px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-button{
+  width: 120px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1.5px solid #5F0080;
+  color: #5F0080;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: white;
+  border-radius: 8px;
+}
+
+
 </style>
