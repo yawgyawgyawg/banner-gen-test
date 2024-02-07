@@ -55,16 +55,26 @@ export default {
           mobile: { size: "21px", weight: "400", color: "#000000" },
         },
       },
-      textContents: {
-        title: "인기 간편식 특가 찬스<br><strong>CJ 브랜드위크</strong>",
-        subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰",
-        disclaimer: "12.08 - 12.15",
-      },
       textColor: '#000000',
     }
   },
-  mounted() {
-    this.loadImage();
+  props: ['textContents'],
+  async mounted() {
+    await this.loadImage();
+    this.updateCanvas(this.activeTab);
+  },
+  watch: {
+    // textContents 객체 전체를 감시합니다.
+    textContents: {
+      deep: true,
+      handler() {
+        if(this.activeTab === 'mobile' && this.$refs.mobileCanvas) {
+          this.updateCanvas('mobile');
+        } else if(this.activeTab === 'pc' && this.$refs.pcCanvas) {
+          this.updateCanvas('pc');
+        }
+      }
+    }
   },
   methods: {
     changeTab(activeTab) {
@@ -85,13 +95,15 @@ export default {
       window.addEventListener('mouseup', () => this.stopDrag(canvasType));
     },
     loadImage() {
-      this.image = new Image();
-      this.image.onLoad = () => {
-        this.initializeCanvas('mobile');
-        this.initializeCanvas('pc');
-      };
-      this.image.crossOrigin = '*';
-      this.image.src = require('@/assets/sampleimage2.jpeg');
+      return new Promise((resolve, reject) => {
+        this.image = new Image();
+        this.image.onload = () => {
+          resolve();
+        };
+        this.image.onerror = reject;
+        this.image.crossOrigin = '*';
+        this.image.src = require('@/assets/sampleimage2.jpeg');
+      });
     },
     applyTextColor() {
       this.updateCanvas('mobile');

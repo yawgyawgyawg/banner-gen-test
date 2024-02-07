@@ -13,7 +13,8 @@
           <div class="fields-textarea">
             <div class="textarea-container">
               <label for="text-top">상단 텍스트</label>
-              <textarea name="text-top" id="text-top" rows="3" placeholder="텍스트를 입력하세요"></textarea>
+              <textarea name="text-top" id="text-top" rows="3" placeholder="텍스트를 입력하세요"
+                        :value="localTextContents.title" @input="updateText('title', $event.target.value)"/>
               <div class="idea-button" @click="requestSuggestion">
                 <svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_70_154)">
@@ -29,7 +30,8 @@
             </div>
             <div class="textarea-container">
               <label for="text-middle">중간 텍스트</label>
-              <textarea name="text-middle" id="text-middle" rows="3" placeholder="텍스트를 입력하세요"></textarea>
+              <textarea name="text-middle" id="text-middle" rows="3" placeholder="텍스트를 입력하세요"
+                        :value="localTextContents.subTitle" @input="updateText('subTitle', $event.target.value)"/>
               <div class="idea-button" @click="requestSuggestion">
                 <svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_70_154)">
@@ -45,7 +47,8 @@
             </div>
             <div class="textarea-container">
               <label for="text-bottom">하단 텍스트</label>
-              <textarea name="text-bottom" id="text-bottom" rows="1" placeholder="텍스트를 입력하세요"></textarea>
+              <textarea name="text-bottom" id="text-bottom" rows="1" placeholder="텍스트를 입력하세요"
+                        :value="localTextContents.disclaimer" @input="updateText('disclaimer', $event.target.value)"/>
             </div>
           </div>
           <div class="fields-suggestions">
@@ -102,10 +105,23 @@ export default {
       originalImageSrc: null,
       suggestionRequested: false,
       generatedImageSrc: null,
-
+      localTextContents: JSON.parse(JSON.stringify(this.textContents)),
+    }
+  },
+  props: ['textContents'],
+  watch: {
+    textContents: {
+      deep: true,
+      handler(newVal) {
+        this.localTextContents = JSON.parse(JSON.stringify(newVal));
+      }
     }
   },
   methods: {
+    updateText(key, value) {
+      this.localTextContents[key] = value;
+      this.$emit('updateTextContents', { key, value });
+    },
     requestSuggestion() {
       this.suggestionRequested = true;
     },

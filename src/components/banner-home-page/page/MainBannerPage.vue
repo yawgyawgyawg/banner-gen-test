@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <MainBannerHeader/>
-    <BannerEditArea/>
-    <BannerPreviewArea/>
+    <BannerEditArea :textContents="textContents" @updateTextContents="handleTextUpdate"/>
+    <BannerPreviewArea :textContents="textContents"/>
   </div>
 </template>
 
@@ -14,9 +14,18 @@ export default {
   name: "MainBannerPage",
   components: {BannerPreviewArea, BannerEditArea, MainBannerHeader},
   data() {
+    return {
+      textContents: {
+        title: "인기 간편식 특가 찬스<br><strong>CJ 브랜드위크</strong>",
+        subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰",
+        disclaimer: "12.08 - 12.15",
+      },
+    }
   },
   methods: {
-
+    handleTextUpdate(payload) {
+      this.textContents[payload.key] = payload.value;
+    },
   }
 }
 </script>
