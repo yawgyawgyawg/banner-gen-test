@@ -40,6 +40,7 @@ export default {
       activeTab: 'mobile',
       image: null,
       mobile: {
+        imageId: null,
         dragging: false,
         imageX: 0,
         imageY: 0,
@@ -48,6 +49,7 @@ export default {
         lastMouseY: null,
       },
       pc: {
+        imageId: null,
         dragging: false,
         imageX: 0,
         imageY: 0,
