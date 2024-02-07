@@ -91,6 +91,18 @@ export default {
           this.updateCanvas('pc');
         }
       }
+    },
+    bannerId: {
+      immediate: true,
+      handler() {
+        if(this.activeTab === 'mobile' && this.$refs.mobileCanvas) {
+          this.loadImage().then(() => this.initializeCanvas('mobile'));
+          this.updateCanvas('mobile');
+        } else if(this.activeTab === 'pc' && this.$refs.pcCanvas) {
+          this.loadImage().then(() => this.initializeCanvas('pc'));
+          this.updateCanvas('pc');
+        }
+      }
     }
   },
   methods: {
