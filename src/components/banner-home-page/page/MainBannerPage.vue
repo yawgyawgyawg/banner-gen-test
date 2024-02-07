@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <MainBannerHeader/>
-    <BannerEditArea :textContents="textContents" @updateTextContents="handleTextUpdate"/>
+    <BannerEditArea :textContents="textContents" @updateTextContents="handleTextUpdate" :banner-id="bannerId"/>
     <BannerPreviewArea :textContents="textContents"/>
   </div>
 </template>
@@ -15,12 +15,16 @@ export default {
   components: {BannerPreviewArea, BannerEditArea, MainBannerHeader},
   data() {
     return {
+      bannerId: 2,
       textContents: {
         title: "인기 간편식 특가 찬스<br><strong>CJ 브랜드위크</strong>",
         subTitle: "찌개 · 간식 최대 22% 할인<br>+ 4천원 쿠폰",
         disclaimer: "12.08 - 12.15",
       },
     }
+  },
+  mounted() {
+    this.bannerId = parseInt(this.$route.query.idx);
   },
   methods: {
     handleTextUpdate(payload) {

@@ -79,13 +79,13 @@
             <div class="fields-top-text">원본 이미지</div>
             <input type="file" @change="loadOriginalImage" hidden ref="fileInput">
             <img :src="originalImageSrc" alt="원본 이미지 미리보기">
-            <div>{{ originalImagePath }}</div>
+            <div>{{ originalImageSrc }}</div>
             <button @click="triggerFileInput">변경하기</button>
           </div>
 
           <div class="fields-generated-image">
             <div class="fields-top-text">확장 이미지</div>
-            <img :src="generatedImageSrc" alt="확장 이미지 미리보기">
+            <img :src="resolvedImageSrc" alt="확장 이미지 미리보기">
             <button @click="refreshGeneratedImage">새로고침</button>
             <button @click="applyGeneratedImage">적용하기</button>
           </div>
@@ -100,7 +100,7 @@ export default {
   name: "BannerEditArea",
   data() {
     return {
-      activeTab: 'text',
+      activeTab: 'image',
       originalImagePath: `이미지를 선택해주세요 (jpg, png, gif, svg, jpeg 등)`,
       originalImageSrc: null,
       suggestionRequested: false,
@@ -108,12 +108,39 @@ export default {
       localTextContents: JSON.parse(JSON.stringify(this.textContents)),
     }
   },
-  props: ['textContents'],
+  props: {
+    textContents: Array,
+    bannerId: Number,
+  },
+  mounted() {
+    this.updateGeneratedImageSrc(this.originalImageSrc);
+  },
   watch: {
     textContents: {
       deep: true,
       handler(newVal) {
         this.localTextContents = JSON.parse(JSON.stringify(newVal));
+      }
+    },
+    bannerId: {
+      immediate: true,
+      handler(newVal) {
+        this.setOriginalImageSrc(newVal);
+      },
+    },
+    originalImageSrc(newVal) {
+      this.updateGeneratedImageSrc(newVal);
+    },
+  },
+  computed: {
+    // 이미지 경로를 계산된 속성으로 처리
+    resolvedImageSrc() {
+      if(!this.generatedImageSrc) return '';
+      try {
+        return require(`@/assets/images/${this.generatedImageSrc}`);
+      } catch (e) {
+        console.error("Image not found:", e);
+        return ''; // 이미지를 찾을 수 없는 경우의 기본값 처리
       }
     }
   },
@@ -127,6 +154,38 @@ export default {
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
+    },
+    setOriginalImageSrc(bannerId) {
+      const imagePaths = {
+        1: require('@/assets/images/original1.jpg'),
+        2: require('@/assets/images/original2.jpg'),
+        3: require('@/assets/images/original3.jpg'),
+      };
+      this.originalImageSrc = imagePaths[bannerId];
+    },
+    updateGeneratedImageSrc(originalSrc) {
+      console.log('이미지 경로:', originalSrc)
+      // 파일 경로에서 파일명 추출
+      const fileName = originalSrc.split('/').pop();
+      console.log('파일명:', fileName)
+      // 파일명에서 'original' 다음에 오는 숫자 및 하이픈과 숫자 조합 추출
+      const fileNumberPattern = fileName.match(/original(\d+(-\d+)?)/);
+      console.log('추출된 파일 번호:', fileNumberPattern)
+
+      if (fileNumberPattern) {
+        // 추출된 패턴(숫자 및 가능한 하이픈과 숫자)을 기반으로 새 파일명 생성
+        const fileNumber = String(fileNumberPattern[1]); // '2' 또는 '2-2'와 같은 문자열
+        console.log(fileNumber + '번째 이미지를 생성합니다');
+        const genImagePaths = {
+          '1': 'generated1.jpg',
+          '2': 'generated2.jpg',
+          '3': 'generated3.jpg',
+          '1-1': 'generated1-1.jpg',
+          '2-1': 'generated2-1.jpg',
+          '3-1': 'generated3-1.jpg',
+        };
+        this.generatedImageSrc = genImagePaths[fileNumber];
+      }
     },
     loadOriginalImage(event) {
       const file = event.target.files[0];
