@@ -206,10 +206,10 @@ export default {
       }
 
       const storedState = this.$store.getters.getBannerState(canvasType);
-
       if (storedState && storedState.imageId === this.bannerId) {
-        this[canvasType] = { ...this[canvasType], ...storedState };
-      } else {
+        Object.assign(this[canvasType], storedState);
+      }
+      else {
         this[canvasType] = {
           ...this[canvasType],
           imageId: this.bannerId,

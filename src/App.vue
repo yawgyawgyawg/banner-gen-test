@@ -5,11 +5,11 @@
       <div class="nav-bar-logo">
         <img src="@/assets/logo.png" alt="로고" width="200px" height="auto"/>
       </div>
-      <router-link class="nav-item" to="/mainbanner" active-class="active-link">메인 홈 배너</router-link>
+      <router-link class="nav-item" to="/mainbanner?idx=1" active-class="active-link">메인 홈 배너</router-link>
       <router-link class="nav-item" to="/download" active-class="active-link">특가혜택 탭 띠배너</router-link>
-      <router-link class="nav-item" to="/download" active-class="active-link">상세페이지</router-link>
-      <router-link class="nav-item" to="/download" active-class="active-link">아웃풋 갤러리</router-link>
-      <router-link class="nav-item" to="/download" active-class="active-link">설정</router-link>
+      <router-link class="nav-item" to="/download2" active-class="active-link">상세페이지</router-link>
+      <router-link class="nav-item" to="/download3" active-class="active-link">아웃풋 갤러리</router-link>
+      <router-link class="nav-item" to="/download4" active-class="active-link">설정</router-link>
     </div>
     <div class="top-bar">
 
